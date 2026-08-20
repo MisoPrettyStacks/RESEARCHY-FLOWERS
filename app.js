@@ -1,28 +1,26 @@
 /**
- * Blossom 🌸 Research Terminal
+ * Blossom 🌸 Institutional Research Terminal
  * Core Execution Engine Layer
  * 100% Free Client-Side Architecture
  */
 
-// Global state tracking for managed assets
 const CONFIG = {
   corsProxy: "https://corsproxy.io",
   apiBase: "https://yahoo.com"
 };
 
-// Default tracked assets for our custom watchlist
 let cryptoWatchlist = ["BTC-USD", "ETH-USD", "XRP-USD", "SOL-USD"];
 
-// ===== 1. DESKTOP WINDOW MANAGEMENT LAYER =====
-
+// ===== 1. DESKTOP WINDOW MANAGEMENT LAYER WITH INTERCEPT PROTECTION =====
 function openWindow(id) {
   const el = document.getElementById(id);
-  if (el) {
-    el.style.display = 'flex';
-    // Shift selected window to focus layer foreground
-    document.querySelectorAll('.win').forEach(w => w.style.zIndex = '10');
-    el.style.zIndex = '12';
+  if (!el) {
+    console.error(`Layout engine mismatch: window target [${id}] not found.`);
+    return;
   }
+  el.style.display = 'flex';
+  document.querySelectorAll('.win').forEach(w => w.style.zIndex = '10');
+  el.style.zIndex = '12';
 }
 
 function closeWindow(id) {
@@ -35,41 +33,41 @@ function minimizeWindow(id) {
   if (el) el.style.display = 'none';
 }
 
-// Draggable Titlebar Pointer Bindings
-document.querySelectorAll('.win-titlebar').forEach(bar => {
-  bar.addEventListener('mousedown', function(e) {
-    // Avoid hijacking events when clicking action buttons
-    if (e.target.classList.contains('win-btn') || e.target.tagName === 'INPUT') return;
-    
-    const win = bar.parentElement;
-    
-    // Focus active layout layer
-    document.querySelectorAll('.win').forEach(w => w.style.zIndex = '10');
-    win.style.zIndex = '12';
+// Draggable Window Handler with Active Boundary Checks
+function initializeDraggables() {
+  document.querySelectorAll('.win-titlebar').forEach(bar => {
+    bar.addEventListener('mousedown', function(e) {
+      if (e.target.classList.contains('win-btn') || e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+      
+      const win = bar.parentElement;
+      if (!win) return;
+      
+      document.querySelectorAll('.win').forEach(w => w.style.zIndex = '10');
+      win.style.zIndex = '12';
 
-    let shiftX = e.clientX - win.getBoundingClientRect().left;
-    let shiftY = e.clientY - win.getBoundingClientRect().top;
+      let shiftX = e.clientX - win.getBoundingClientRect().left;
+      let shiftY = e.clientY - win.getBoundingClientRect().top;
 
-    function moveAt(clientX, clientY) {
-      win.style.left = (clientX - shiftX) + 'px';
-      win.style.top = (clientY - shiftY) + 'px';
-    }
+      function moveAt(clientX, clientY) {
+        win.style.left = (clientX - shiftX) + 'px';
+        win.style.top = (clientY - shiftY) + 'px';
+      }
 
-    function onMouseMove(event) {
-      moveAt(event.clientX, event.clientY);
-    }
+      function onMouseMove(event) {
+        moveAt(event.clientX, event.clientY);
+      }
 
-    document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mousemove', onMouseMove);
 
-    document.onmouseup = function() {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.onmouseup = null;
-    };
+      document.onmouseup = function() {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.onmouseup = null;
+      };
+    });
   });
-});
+}
 
 // ===== 2. CORE QUANTITATIVE ANALYSIS ENGINE =====
-
 async function analyzeAsset(customSymbol = null) {
   const inputEl = document.getElementById('ticker-input');
   const logEl = document.getElementById('terminal-log');
@@ -77,14 +75,12 @@ async function analyzeAsset(customSymbol = null) {
   const errorBox = document.getElementById('error-container');
   const quantBox = document.getElementById('quant-results');
   
-  // Accept symbol from search field or automated template triggers
+  if (!inputEl || !logEl || !badgeEl || !errorBox || !quantBox) return;
+
   let symbol = (customSymbol || inputEl.value).trim().toUpperCase();
   if (!symbol) return;
 
-  // Force mirror text back into user form input context
   inputEl.value = symbol;
-
-  // Reset visual layout metrics
   errorBox.style.display = 'none';
   quantBox.style.display = 'none';
   badgeEl.innerText = "Syncing...";
@@ -92,7 +88,6 @@ async function analyzeAsset(customSymbol = null) {
   logEl.innerHTML = `<div class="log-line trying"><span class="log-icon">⏳</span> Contacting data node vectors for [${symbol}]...</div>`;
 
   try {
-    // Construct free endpoint request with browser-safe CORS routing rules
     const targetUrl = `${CONFIG.apiBase}${symbol}?range=1mo&interval=1d`;
     const response = await fetch(`${CONFIG.corsProxy}${encodeURIComponent(targetUrl)}`);
     
@@ -105,18 +100,16 @@ async function analyzeAsset(customSymbol = null) {
     }
     
     const meta = data.chart.result.meta;
-    const indicators = data.chart.result.indicators.quote[0];
+    const indicators = data.chart.result.indicators.quote;
     
-    // Clean null arrays returned during extended holiday hours
-    const historicalCloses = indicators.close.filter(val => val !== null);
-    const historicalHighs = indicators.high.filter(val => val !== null);
-    const historicalLows = indicators.low.filter(val => val !== null);
+    const historicalCloses = indicators.close ? indicators.close.filter(val => val !== null) : [];
+    const historicalHighs = indicators.high ? indicators.high.filter(val => val !== null) : [];
+    const historicalLows = indicators.low ? indicators.low.filter(val => val !== null) : [];
 
     if (historicalCloses.length < 5) {
       throw new Error("Insufficient trade depth history detected to derive metrics.");
     }
 
-    // Capture Real-Time Financial Constants
     const currentPrice = meta.regularMarketPrice || historicalCloses[historicalCloses.length - 1];
     const prevClose = meta.previousClose || historicalCloses[historicalCloses.length - 2];
     const pctChange = ((currentPrice - prevClose) / prevClose) * 100;
@@ -124,13 +117,9 @@ async function analyzeAsset(customSymbol = null) {
     logEl.innerHTML += `<div class="log-line success"><span class="log-icon">✓</span> Live feed synced. Spot: $${currentPrice.toFixed(2)}</div>`;
     logEl.innerHTML += `<div class="log-line trying"><span class="log-icon">⏳</span> Computing technical factor vectors...</div>`;
 
-    // 1. Compute Relative Strength Index (RSI - 14 Days)
     let rsi = calculateRSI(historicalCloses, 14);
-    
-    // 2. Compute Volatility Matrices (Average True Range Approximation)
     let atr = calculateVolatility(historicalHighs, historicalLows, historicalCloses);
 
-    // Render Data Card UI
     document.getElementById('val-price').innerText = `$${currentPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
     const changeEl = document.getElementById('val-change');
     changeEl.innerText = `${pctChange >= 0 ? '+' : ''}${pctChange.toFixed(2)}%`;
@@ -138,7 +127,6 @@ async function analyzeAsset(customSymbol = null) {
     document.getElementById('val-rsi').innerText = rsi.toFixed(2);
     document.getElementById('val-atr').innerText = `$${atr.toFixed(2)}`;
 
-    // 3. Generate Mathematical Targets Structure
     generateStrategicTargets(currentPrice, atr, rsi, symbol);
 
     badgeEl.innerText = symbol;
@@ -153,7 +141,6 @@ async function analyzeAsset(customSymbol = null) {
   }
 }
 
-// Mathematical Formula Calculation Blocks
 function calculateRSI(closes, period = 14) {
   if (closes.length <= period) return 50.0;
   let gains = 0;
@@ -189,6 +176,7 @@ function calculateVolatility(highs, lows, closes) {
 
 function generateStrategicTargets(spot, atr, rsi, symbol) {
   const targetOutput = document.getElementById('target-output');
+  if (!targetOutput) return;
   
   let entryZoneStart = spot - (atr * 0.85);
   let entryZoneEnd = spot - (atr * 1.5);
@@ -228,12 +216,9 @@ QUANT PIPELINE TACTICAL FIELD NOTE:
 }
 
 // ===== 3. DYNAMIC CRYPTO WATCHLIST PIPELINE MAPPING =====
-
 async function updateWatchlistUI() {
   const container = document.getElementById('watchlist-items-box');
-  if (!container) return; // Exit gracefully if user hasn't refreshed HTML template container yet
-  
-  container.innerHTML = `<div class="hint muted" style="padding: 10px;">Refreshing ticker grid feeds...</div>`;
+  if (!container) return;
   
   let htmlString = "";
 
@@ -255,3 +240,16 @@ async function updateWatchlistUI() {
       htmlString += `
         <div class="vault-card" style="cursor: pointer; margin-bottom: 8px;" onclick="analyzeAsset('${symbol}')">
           <div class="vault-card-head" style="justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div class="vault-rank" style="background: var(--teal);">★</div>
+              <strong>${symbol}</strong>
+            </div>
+            <span style="font-weight: 700; color: ${changeColor};">${changeSign}${pctChange.toFixed(2)}%</span>
+          </div>
+          <p class="muted" style="margin-top: 4px; font-size: 13px; font-family: monospace; font-weight: 700;">
+            Spot: $${price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+          </p>
+        </div>
+      `;
+    } catch (e) {
+      htmlString += `
