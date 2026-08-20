@@ -1,9 +1,25 @@
-// ===== Windows OS Core Layer =====
+/**
+ * Blossom 🌸 Institutional Research Terminal
+ * Core Execution Engine Layer
+ * 100% Free Client-Side Architecture
+ */
+
+// Global state tracking for managed assets
+const CONFIG = {
+  corsProxy: "https://corsproxy.io",
+  apiBase: "https://yahoo.com"
+};
+
+// Default tracked assets for our custom watchlist
+let cryptoWatchlist = ["BTC-USD", "ETH-USD", "XRP-USD", "SOL-USD"];
+
+// ===== 1. DESKTOP WINDOW MANAGEMENT LAYER =====
+
 function openWindow(id) {
   const el = document.getElementById(id);
   if (el) {
     el.style.display = 'flex';
-    // Bring window to front
+    // Shift selected window to focus layer foreground
     document.querySelectorAll('.win').forEach(w => w.style.zIndex = '10');
     el.style.zIndex = '12';
   }
@@ -15,18 +31,19 @@ function closeWindow(id) {
 }
 
 function minimizeWindow(id) {
-  // Classic OS minimization toggle simulation
   const el = document.getElementById(id);
   if (el) el.style.display = 'none';
 }
 
-// Draggable Titlebar Implementation
+// Draggable Titlebar Pointer Bindings
 document.querySelectorAll('.win-titlebar').forEach(bar => {
   bar.addEventListener('mousedown', function(e) {
-    if (e.target.classList.contains('win-btn')) return;
+    // Avoid hijacking events when clicking action buttons
+    if (e.target.classList.contains('win-btn') || e.target.tagName === 'INPUT') return;
+    
     const win = bar.parentElement;
     
-    // Bring clicked window to the top
+    // Focus active layout layer
     document.querySelectorAll('.win').forEach(w => w.style.zIndex = '10');
     win.style.zIndex = '12';
 
@@ -51,42 +68,55 @@ document.querySelectorAll('.win-titlebar').forEach(bar => {
   });
 });
 
-// ===== Hard Quantitative Analysis Engine =====
-async function analyzeAsset() {
+// ===== 2. CORE QUANTITATIVE ANALYSIS ENGINE =====
+
+async function analyzeAsset(customSymbol = null) {
   const inputEl = document.getElementById('ticker-input');
   const logEl = document.getElementById('terminal-log');
   const badgeEl = document.getElementById('asset-badge');
   const errorBox = document.getElementById('error-container');
   const quantBox = document.getElementById('quant-results');
   
-  let symbol = inputEl.value.trim().toUpperCase();
+  // Accept symbol from search field or automated template triggers
+  let symbol = (customSymbol || inputEl.value).trim().toUpperCase();
   if (!symbol) return;
 
-  // Clear states
+  // Force mirror text back into user form input context
+  inputEl.value = symbol;
+
+  // Reset visual layout metrics
   errorBox.style.display = 'none';
   quantBox.style.display = 'none';
   badgeEl.innerText = "Syncing...";
   
-  logEl.innerHTML = `<div class="log-line trying"><span class="log-icon">⏳</span> Contacting international data node vectors for [${symbol}]...</div>`;
+  logEl.innerHTML = `<div class="log-line trying"><span class="log-icon">⏳</span> Contacting data node vectors for [${symbol}]...</div>`;
 
   try {
-    // Fetch live market data safely utilizing an unauthenticated open historical pipeline
-    const response = await fetch(`https://yahoo.com{symbol}?range=1mo&interval=1d`);
+    // Construct free endpoint request with browser-safe CORS routing rules
+    const targetUrl = `${CONFIG.apiBase}${symbol}?range=1mo&interval=1d`;
+    const response = await fetch(`${CONFIG.corsProxy}${encodeURIComponent(targetUrl)}`);
     
     if (!response.ok) throw new Error("Ticker symbol location rejected by exchange cluster.");
     
     const data = await response.json();
-    const meta = data.chart.result[0].meta;
-    const indicators = data.chart.result[0].indicators.quote[0];
+    
+    if (!data.chart || !data.chart.result) {
+      throw new Error("Invalid response payload. Ensure ticker string format matches 'BTC-USD' or 'AAPL'.");
+    }
+    
+    const meta = data.chart.result.meta;
+    const indicators = data.chart.result.indicators.quote[0];
+    
+    // Clean null arrays returned during extended holiday hours
     const historicalCloses = indicators.close.filter(val => val !== null);
     const historicalHighs = indicators.high.filter(val => val !== null);
     const historicalLows = indicators.low.filter(val => val !== null);
 
     if (historicalCloses.length < 5) {
-      throw new Error("Insufficient trade depth history detected to derive calculations.");
+      throw new Error("Insufficient trade depth history detected to derive metrics.");
     }
 
-    // Capture Real Current Spot Statistics
+    // Capture Real-Time Financial Constants
     const currentPrice = meta.regularMarketPrice || historicalCloses[historicalCloses.length - 1];
     const prevClose = meta.previousClose || historicalCloses[historicalCloses.length - 2];
     const pctChange = ((currentPrice - prevClose) / prevClose) * 100;
@@ -94,13 +124,13 @@ async function analyzeAsset() {
     logEl.innerHTML += `<div class="log-line success"><span class="log-icon">✓</span> Live feed synced. Spot: $${currentPrice.toFixed(2)}</div>`;
     logEl.innerHTML += `<div class="log-line trying"><span class="log-icon">⏳</span> Computing technical factor vectors...</div>`;
 
-    // 1. Calculate Real Relative Strength Index (RSI - 14 period standard)
+    // 1. Compute Relative Strength Index (RSI - 14 Days)
     let rsi = calculateRSI(historicalCloses, 14);
     
-    // 2. Calculate Volatility Framework (True Range Approximation)
+    // 2. Compute Volatility Matrices (Average True Range Approximation)
     let atr = calculateVolatility(historicalHighs, historicalLows, historicalCloses);
 
-    // Update Fact Card UI
+    // Render Data Card UI
     document.getElementById('val-price').innerText = `$${currentPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
     const changeEl = document.getElementById('val-change');
     changeEl.innerText = `${pctChange >= 0 ? '+' : ''}${pctChange.toFixed(2)}%`;
@@ -108,11 +138,11 @@ async function analyzeAsset() {
     document.getElementById('val-rsi').innerText = rsi.toFixed(2);
     document.getElementById('val-atr').innerText = `$${atr.toFixed(2)}`;
 
-    // 3. Structural Signal Forecasting Strategy via Pivot Variance Mapping
+    // 3. Generate Mathematical Targets Structure
     generateStrategicTargets(currentPrice, atr, rsi, symbol);
 
     badgeEl.innerText = symbol;
-    logEl.innerHTML += `<div class="log-line success"><span class="log-icon">✓</span> Quantitative pipeline analysis complete.</div>`;
+    logEl.innerHTML += `<div class="log-line success"><span class="log-icon">✓</span> Quantitative pipeline complete.</div>`;
     quantBox.style.display = 'block';
 
   } catch (err) {
@@ -123,9 +153,9 @@ async function analyzeAsset() {
   }
 }
 
-// Mathematical Formula Modules
+// Mathematical Formula Calculation Blocks
 function calculateRSI(closes, period = 14) {
-  if (closes.length <= period) return 50.0; // Fallback default
+  if (closes.length <= period) return 50.0;
   let gains = 0;
   let losses = 0;
 
@@ -141,7 +171,6 @@ function calculateRSI(closes, period = 14) {
 }
 
 function calculateVolatility(highs, lows, closes) {
-  // Compute recent Average True Range vector slice
   let totalRange = 0;
   let count = 0;
   const depth = Math.min(closes.length - 1, 10);
@@ -161,7 +190,6 @@ function calculateVolatility(highs, lows, closes) {
 function generateStrategicTargets(spot, atr, rsi, symbol) {
   const targetOutput = document.getElementById('target-output');
   
-  // Mathematical framework calculation blocks
   let entryZoneStart = spot - (atr * 0.85);
   let entryZoneEnd = spot - (atr * 1.5);
   let stopLoss = spot - (atr * 2.5);
@@ -169,7 +197,7 @@ function generateStrategicTargets(spot, atr, rsi, symbol) {
   let takeProfit2 = spot + (atr * 2.2);
 
   let assetCondition = "NEUTRAL SYMMETRY";
-  let tacticalInstruction = "Await dynamic structural breakout patterns outside structural volatility bands.";
+  let tacticalInstruction = "Await dynamic structural breakout patterns outside baseline volatility bands.";
 
   if (rsi < 35) {
     assetCondition = "OVERSOLD DISLOCATION EXTENSION";
@@ -199,7 +227,31 @@ QUANT PIPELINE TACTICAL FIELD NOTE:
   `.trim();
 }
 
-// Initialize interface default on load
-window.onload = () => {
-  analyzeAsset();
-};
+// ===== 3. DYNAMIC CRYPTO WATCHLIST PIPELINE MAPPING =====
+
+async function updateWatchlistUI() {
+  const container = document.getElementById('watchlist-items-box');
+  if (!container) return; // Exit gracefully if user hasn't refreshed HTML template container yet
+  
+  container.innerHTML = `<div class="hint muted" style="padding: 10px;">Refreshing ticker grid feeds...</div>`;
+  
+  let htmlString = "";
+
+  for (let symbol of cryptoWatchlist) {
+    try {
+      const targetUrl = `${CONFIG.apiBase}${symbol}?range=2d&interval=1d`;
+      const response = await fetch(`${CONFIG.corsProxy}${encodeURIComponent(targetUrl)}`);
+      if (!response.ok) throw new Error();
+      
+      const data = await response.json();
+      const meta = data.chart.result.meta;
+      const price = meta.regularMarketPrice;
+      const prevClose = meta.previousClose;
+      const pctChange = ((price - prevClose) / prevClose) * 100;
+      
+      const changeSign = pctChange >= 0 ? "+" : "";
+      const changeColor = pctChange >= 0 ? "var(--ok)" : "var(--pink-hot)";
+
+      htmlString += `
+        <div class="vault-card" style="cursor: pointer; margin-bottom: 8px;" onclick="analyzeAsset('${symbol}')">
+          <div class="vault-card-head" style="justify-content: space-between;">
