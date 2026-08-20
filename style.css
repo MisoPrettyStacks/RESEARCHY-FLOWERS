@@ -99,9 +99,9 @@ body {
 .win-content { padding: 14px; color: var(--ink); overflow-y: auto; max-height: 80vh; }
 
 /* Custom Kawaii Scrollbars */
-.win-content::-webkit-scrollbar { width: 10px; }
-.win-content::-webkit-scrollbar-track { background: var(--soft-pink); border-radius: 6px; }
-.win-content::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 6px; border: 1.5px solid var(--ink); }
+.win-content::-webkit-scrollbar, .scroll-area::-webkit-scrollbar { width: 10px; }
+.win-content::-webkit-scrollbar-track, .scroll-area::-webkit-scrollbar-track { background: var(--soft-pink); border-radius: 6px; }
+.win-content::-webkit-scrollbar-thumb, .scroll-area::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 6px; border: 1.5px solid var(--ink); }
 
 /* ===== Input Controls & Search Hub ===== */
 .search-box { display: flex; gap: 8px; margin-bottom: 4px; }
@@ -125,6 +125,8 @@ input:focus { outline: none; border-color: var(--pink-deep); box-shadow: 0 0 0 2
 .btn:active { transform: translate(2px,2px); box-shadow: none; }
 .btn.primary { background: var(--pink); }
 .btn.primary:hover { background: var(--pink-deep); }
+.btn.teal { background: var(--teal); }
+.btn.small { padding: 4px 9px; font-size: 11px; }
 
 /* ===== Specific Workspace Formatting ===== */
 #win-blossom { width: 460px; left: 120px; top: 40px; }
