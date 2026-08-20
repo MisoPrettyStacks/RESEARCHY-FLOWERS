@@ -1,5 +1,5 @@
 /**
- * Blossom 🌸 Institutional Research Terminal
+ * Blossom 🌸 Research Terminal
  * Core Execution Engine Layer
  * 100% Free Client-Side Architecture
  */
