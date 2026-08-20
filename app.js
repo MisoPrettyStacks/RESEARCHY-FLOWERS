@@ -5,7 +5,7 @@
  */
 
 const CONFIG = {
-  // Added trailing slash and the missing URL query parameters required by the proxy layout
+  // Added trailing slash and missing URL query parameters required by the proxy layout
   corsProxy: "https://corsproxy.io",
   // Set to the real Yahoo Finance Chart endpoint vector architecture
   apiBase: "https://yahoo.com"
@@ -14,7 +14,61 @@ const CONFIG = {
 let cryptoWatchlist = ["BTC-USD", "ETH-USD", "XRP-USD", "SOL-USD"];
 
 // ===== 1. DESKTOP WINDOW MANAGEMENT LAYER WITH INTERCEPT PROTECTION =====
-// ... (Your window management functions remain the same)
+function openWindow(id) {
+  const el = document.getElementById(id);
+  if (!el) {
+    console.error(`Layout engine mismatch: window target [${id}] not found.`);
+    return;
+  }
+  el.style.display = 'flex';
+  document.querySelectorAll('.win').forEach(w => w.style.zIndex = '10');
+  el.style.zIndex = '12';
+}
+
+function closeWindow(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'none';
+}
+
+function minimizeWindow(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'none';
+}
+
+// Draggable Window Handler with Active Boundary Checks
+function initializeDraggables() {
+  document.querySelectorAll('.win-titlebar').forEach(bar => {
+    bar.addEventListener('mousedown', function(e) {
+      if (e.target.classList.contains('win-btn') || e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+      
+      // Use .closest() to reliably target the window container element regardless of nested depth
+      const win = bar.closest('.win');
+      if (!win) return;
+      
+      document.querySelectorAll('.win').forEach(w => w.style.zIndex = '10');
+      win.style.zIndex = '12';
+
+      let shiftX = e.clientX - win.getBoundingClientRect().left;
+      let shiftY = e.clientY - win.getBoundingClientRect().top;
+
+      function moveAt(clientX, clientY) {
+        win.style.left = (clientX - shiftX) + 'px';
+        win.style.top = (clientY - shiftY) + 'px';
+      }
+
+      function onMouseMove(event) {
+        moveAt(event.clientX, event.clientY);
+      }
+
+      document.addEventListener('mousemove', onMouseMove);
+
+      document.onmouseup = function() {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.onmouseup = null;
+      };
+    });
+  });
+}
 
 // ===== 2. CORE QUANTITATIVE ANALYSIS ENGINE =====
 async function analyzeAsset(customSymbol = null) {
@@ -37,10 +91,10 @@ async function analyzeAsset(customSymbol = null) {
   logEl.innerHTML = `<div class="log-line trying"><span class="log-icon">⏳</span> Contacting data node vectors for [${symbol}]...</div>`;
 
   try {
-    // Correct URL assembly path
+    // Correctly structured target endpoint URL configuration
     const targetUrl = `${CONFIG.apiBase}${symbol}?range=1mo&interval=1d`;
     
-    // Encodes the target URL perfectly behind the parameter string required by the proxy service
+    // Properly prefixes target with the query string format expected by corsproxy.io
     const response = await fetch(`${CONFIG.corsProxy}${encodeURIComponent(targetUrl)}`);
     
     if (!response.ok) throw new Error("Ticker symbol location rejected by exchange cluster.");
@@ -51,7 +105,8 @@ async function analyzeAsset(customSymbol = null) {
       throw new Error("Invalid response payload. Ensure ticker string format matches 'BTC-USD' or 'AAPL'.");
     }
     
-    const meta = data.chart.result[0].meta; // Note: Yahoo data results array container wrapper
+    // Fixed Yahoo data arrays object path mapping parameters (Result is an array layout element [0])
+    const meta = data.chart.result[0].meta;
     const indicators = data.chart.result[0].indicators.quote[0];
     
     const historicalCloses = indicators.close ? indicators.close.filter(val => val !== null) : [];
@@ -93,4 +148,82 @@ async function analyzeAsset(customSymbol = null) {
   }
 }
 
-// ... (Rest of your math formulas function array remains the same)
+function calculateRSI(closes, period = 14) {
+  if (closes.length <= period) return 50.0;
+  let gains = 0;
+  let losses = 0;
+
+  for (let i = closes.length - period; i < closes.length; i++) {
+    let diff = closes[i] - closes[i - 1];
+    if (diff > 0) gains += diff;
+    else losses += Math.abs(diff);
+  }
+
+  if (losses === 0) return 100;
+  let rs = (gains / period) / (losses / period);
+  return 100 - (100 / (1 + rs));
+}
+
+function calculateVolatility(highs, lows, closes) {
+  let totalRange = 0;
+  let count = 0;
+  const depth = Math.min(closes.length - 1, 10);
+  
+  for (let i = closes.length - depth; i < closes.length; i++) {
+    let tr = Math.max(
+      highs[i] - lows[i],
+      Math.abs(highs[i] - closes[i - 1]),
+      Math.abs(lows[i] - closes[i - 1])
+    );
+    totalRange += tr;
+    count++;
+  }
+  return count > 0 ? (totalRange / count) : (closes[closes.length - 1] * 0.02);
+}
+
+function generateStrategicTargets(spot, atr, rsi, symbol) {
+  const targetOutput = document.getElementById('target-output');
+  if (!targetOutput) return;
+  
+  let entryZoneStart = spot - (atr * 0.85);
+  let entryZoneEnd = spot - (atr * 1.5);
+  let stopLoss = spot - (atr * 2.5);
+  let takeProfit1 = spot + (atr * 1.2);
+  let takeProfit2 = spot + (atr * 2.2);
+
+  let assetCondition = "NEUTRAL SYMMETRY";
+  let tacticalInstruction = "Await dynamic structural breakout patterns outside baseline volatility bands.";
+
+  if (rsi < 35) {
+    assetCondition = "OVERSOLD DISLOCATION EXTENSION";
+    tacticalInstruction = `High probability institutional accumulation window active. Scale entry brackets carefully between $${entryZoneStart.toFixed(2)} and $${entryZoneEnd.toFixed(2)}.`;
+  } else if (rsi > 65) {
+    assetCondition = "OVERBOUGHT MOMENTUM SATURATION";
+    tacticalInstruction = `Saturated upward trajectory detected. Do not chase market pricing at current spot. Defer buying actions or realize partial exits near $${takeProfit1.toFixed(2)}.`;
+  }
+
+  targetOutput.innerHTML = `
+=== INST-STRATEGY REPORT MATRIX [${symbol}] ===
+CONSTRAINTS CONFIG: ATR-BASED VOLATILITY ARCHITECTURE
+CURRENT STATE     : ${assetCondition}
+
+[⚡ BUY ENTRY TARGET RANGE]
+► Accumulation Alpha Window: $${entryZoneStart.toFixed(2)} down to $${entryZoneEnd.toFixed(2)}
+
+[🚨 RISK EXCLUSION POINT / STOP-LOSS]
+► Absolute Hard Stop Safety Node: $${stopLoss.toFixed(2)}
+
+[🎯 LIQUIDITY TAKEOFF EXIT POINTS]
+► Target Objective 1 (Take Profit): $${takeProfit1.toFixed(2)}
+► Target Objective 2 (Macro Range): $${takeProfit2.toFixed(2)}
+
+QUANT PIPELINE TACTICAL FIELD NOTE:
+"${tacticalInstruction}"
+  `.trim();
+}
+
+// ===== 3. CORE RUNTIME INITIALIZATION =====
+// Ensures drag listeners bind automatically after the DOM layer is completely built and drawn.
+document.addEventListener("DOMContentLoaded", () => {
+  initializeDraggables();
+});
