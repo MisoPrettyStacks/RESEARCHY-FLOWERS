@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blossom 🌸 Institutional Research Terminal</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+
+    :root {
+      --ink: #2b2b3d; --paper: #fdfaf6; --pink: #ff9fc7; --pink-deep: #ff7fb8;
+      --pink-hot: #cc0066; --peach: #ffc4a3; --purple: #cdb3f0; --teal: #7fe0e0;
+      --blue: #9fc9f5; --yellow: #ffe06f; --soft-blue: #e8f4fd; --soft-pink: #ffe0f0;
+      --ok: #1f9d55;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; width: 100%; overflow: hidden; }
+    body { font-family: 'DM Sans', 'Trebuchet MS', Arial, sans-serif; color: var(--ink); background-color: var(--soft-pink); }
+
+    .desktop {
+      width: 100%; height: 100vh;
+      background: radial-gradient(circle, var(--soft-pink) 20%, transparent 20%),
+                  radial-gradient(circle, var(--soft-blue) 20%, transparent 20%);
+      background-size: 40px 40px; background-position: 0 0, 20px 20px;
+      position: relative; overflow: hidden;
+    }
+
+    .sparkle { position: absolute; pointer-events: none; font-size: 22px; animation: sparkle-anim 3s infinite ease-in-out; filter: drop-shadow(0 0 2px rgba(255,255,255,0.9)); user-select: none; }
+    @keyframes sparkle-anim { 0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); } 50% { opacity: 0.3; transform: scale(1.4) rotate(180deg); } }
+
+    .icon-grid { display: flex; flex-direction: column; gap: 18px; padding: 18px; position: absolute; top: 6px; left: 6px; z-index: 5; }
+    .desktop-icon { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; width: 78px; }
+    .desktop-icon:hover .icon-label { background: var(--ink); color: #fff; }
+    .icon-img { font-size: 26px; line-height: 1; display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: var(--paper); border: 2.5px solid var(--ink); border-radius: 12px; box-shadow: 3px 3px 0 rgba(43,43,61,0.85); transition: transform 0.1s; }
+    .desktop-icon:active .icon-img { transform: scale(0.95); }
+    .icon-label { font-size: 11px; font-weight: 700; color: var(--ink); text-align: center; padding: 2px 7px; background: rgba(253,250,246,0.9); border-radius: 7px; white-space: nowrap; border: 1.5px solid var(--ink); }
+
+    .win { position: absolute; background: var(--paper); border: 2.5px solid var(--ink); border-radius: 14px; box-shadow: 6px 6px 0 rgba(43,43,61,0.9); min-width: 280px; font-size: 13px; cursor: default; overflow: hidden; z-index: 10; display: none; }
+    .win.open { display: flex; flex-direction: column; }
+    .win-titlebar { padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; cursor: move; font-size: 13px; font-weight: 700; color: var(--ink); letter-spacing: 0.2px; border-bottom: 2.5px solid var(--ink); user-select: none; }
+    .tb-pink   { background: linear-gradient(90deg, #ff9fc7, #ffc4a3) !important; }
+    .tb-purple { background: linear-gradient(90deg, #cdb3f0, #f0b3e0) !important; }
+    .tb-teal   { background: linear-gradient(90deg, #7fe0e0, #9fc9f5) !important; }
+
+    .win-btns { display: flex; gap: 5px; }
+    .win-btn { width: 22px; height: 22px; border: 2px solid var(--ink); border-radius: 6px; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; color: var(--ink); background: var(--paper); flex-shrink: 0; line-height: 1; padding-bottom: 2px; }
+    .win-btn:hover { background: #fff; transform: translateY(-1px); }
+    .win-btn:active { transform: translateY(1px); }
+    .win-content { padding: 14px; color: var(--ink); overflow-y: auto; max-height: 80vh; }
+
+    .win-content::-webkit-scrollbar, .scroll-area::-webkit-scrollbar { width: 10px; }
+    .win-content::-webkit-scrollbar-track, .scroll-area::-webkit-scrollbar-track { background: var(--soft-pink); border-radius: 6px; }
+    .win-content::-webkit-scrollbar-thumb, .scroll-area::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 6px; border: 1.5px solid var(--ink); }
+
+    .search-box { display: flex; gap: 8px; margin-bottom: 4px; }
+    #ticker-input { text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+    .field-label { display: block; font-weight: 700; font-size: 12px; margin: 10px 0 5px; color: var(--pink-hot); }
+    .muted { color: #6b6b7a; font-weight: 400; }
+
+    input[type="text"] { flex-grow: 1; border: 2px solid var(--ink); border-radius: 8px; padding: 8px 10px; font: inherit; font-size: 13px; background: #fff; color: var(--ink); }
+    input:focus { outline: none; border-color: var(--pink-deep); box-shadow: 0 0 0 2px var(--soft-pink); }
+
+    .btn { background: var(--paper); border: 2px solid var(--ink); border-radius: 8px; box-shadow: 2px 2px 0 rgba(43,43,61,0.85); padding: 7px 14px; font: inherit; font-size: 12px; font-weight: 700; color: var(--ink); cursor: pointer; transition: transform .08s; }
+    .btn:hover { background: #fff; }
+    .btn:active { transform: translate(2px,2px); box-shadow: none; }
+    .btn:disabled { opacity: .55; cursor: default; transform: none; }
+    .btn.primary { background: var(--pink); }
+    .btn.primary:hover { background: var(--pink-deep); }
+    .btn.teal { background: var(--teal); }
+    .btn.small { padding: 4px 9px; font-size: 11px; }
+
+    #win-blossom { width: 460px; left: 60px; top: 40px; }
+    #win-vault { width: 380px; left: 540px; top: 40px; }
+    #win-watchlist { width: 340px; left: 540px; top: 340px; }
+
+    .providers-hint { font-size: 11.5px; background: var(--soft-pink); color: var(--pink-hot); border: 2px solid var(--pink); border-radius: 8px; padding: 8px 10px; margin-bottom: 12px; line-height: 1.4; }
+    .run-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+    .hint { font-size: 11px; }
+
+    .result-box { margin-top: 14px; border-top: 2px dashed var(--pink); padding-top: 12px; }
+    .result-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .result-head h3 { font-size: 13px; font-weight: 700; }
+    .badge { font-size: 11px; background: var(--purple); color: var(--ink); padding: 2px 8px; border-radius: 999px; border: 1.5px solid var(--ink); font-weight: 700; }
+
+    .run-log { font-family: 'Courier New', monospace; font-size: 11px; background: #1c1c24; color: #00ff88; border: 2px solid var(--ink); border-radius: 8px; padding: 10px; max-height: 110px; overflow-y: auto; margin-bottom: 14px; }
+    .log-line { display: flex; gap: 6px; padding: 2px 0; align-items: center; }
+    .log-icon { width: 12px; font-weight: bold; }
+    .log-line.success { color: #00ff88; }
+    .log-line.trying { color: var(--yellow); }
+    .log-line.failed { color: #ff66a3; }
+
+    .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .metric-card { background: #fff; border: 2px solid var(--ink); border-radius: 10px; padding: 8px 10px; box-shadow: 2px 2px 0 rgba(43,43,61,0.5); display: flex; flex-direction: column; }
+    .m-label { font-size: 10.5px; font-weight: 700; color: #78788a; text-transform: uppercase; }
+    .m-val { font-size: 15px; font-weight: 700; color: var(--ink); margin-top: 2px; }
+
+    .output { white-space: pre-wrap; word-break: break-word; font-size: 12px; margin: 0; font-family: monospace; background: var(--soft-blue); border: 2px solid var(--blue); border-radius: 10px; padding: 12px; line-height: 1.5; color: #1e2d4a; }
+    .error-box { background: var(--soft-pink); color: var(--pink-hot); border: 2px solid var(--pink); padding: 9px 11px; border-radius: 8px; font-size: 12px; font-weight: 700; }
+
+    .vault-intro { font-size: 12px; color: #5b5b6a; margin-bottom: 14px; line-height: 1.5; }
+    .vault-list { display: grid; gap: 12px; }
+    .vault-card { border: 2px solid var(--ink); border-radius: 12px; padding: 11px; background: #fff; box-shadow: 2px 2px 0 rgba(43,43,61,0.5); cursor: pointer; }
+    .vault-card-head { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+    .vault-rank { width: 22px; height: 22px; border-radius: 7px; background: var(--pink); color: var(--ink); display: grid; place-items: center; font-size: 11px; font-weight: 700; border: 1.5px solid var(--ink); }
+  </style>
+</head>
+<body>
+
+  <div class="desktop">
+    <div class="sparkle" style="top: 15%; left: 45%;">✨</div>
+    <div class="sparkle" style="top: 60%; left: 80%;">🌸</div>
+    <div class="sparkle" style="top: 75%; left: 15%;">✨</div>
+
+    <div class="icon-grid">
+      <div class="desktop-icon" onclick="openWindow('win-blossom')">
+        <div class="icon-img">📈</div>
+        <div class="icon-label">Terminal</div>
+      </div>
+      <div class="desktop-icon" onclick="openWindow('win-vault')">
+        <div class="icon-img">🔑</div>
+        <div class="icon-label">Metrics Vault</div>
+      </div>
+      <div class="desktop-icon" onclick="openWindow('win-watchlist')">
+        <div class="icon-img">⭐</div>
+        <div class="icon-label">Watchlist</div>
+      </div>
+    </div>
+
+    <div id="win-blossom" class="win open">
+      <div class="win-titlebar tb-pink">
+        <span>🌸 Blossom Quantitative Command</span>
+        <div class="win-btns">
+          <div class="win-btn" onclick="minimizeWindow('win-blossom')">-</div>
+          <div class="win-btn" onclick="closeWindow('win-blossom')">×</div>
+        </div>
+      </div>
+      <div class="win-content">
+        <div class="providers-hint">
+          <strong>Live Mode:</strong> Pulls real quotes/history from Yahoo Finance's public chart endpoint via a CORS relay. No mock data.
+        </div>
+
+        <label class="field-label">Lookup Ticker Asset</label>
+        <div class="search-box">
+          <input type="text" id="ticker-input" placeholder="e.g., AAPL, BTC-USD, NVDA" value="AAPL">
+          <button class="btn primary" id="btn-fetch" onclick="analyzeAsset()">Analyze</button>
+        </div>
+
+        <div class="run-row">
+          <span class="hint muted">Crypto pairs need a suffix: BTC-USD, ETH-USD, SOL-USD, XRP-USD.</span>
+        </div>
+
+        <div class="result-box">
+          <div class="result-head">
+            <h3>Pipeline Engine Logs</h3>
+            <span class="badge" id="asset-badge">Idle</span>
+          </div>
+          <div class="run-log" id="terminal-log">
+            <div class="log-line success"><span class="log-icon">✓</span> Kernel initialized successfully.</div>
+            <div class="log-line trying"><span class="log-icon">⏳</span> Awaiting user ticker submission...</div>
+          </div>
+        </div>
+
+        <div class="quant-output-container" id="quant-results" style="display: none;">
+          <h3 class="field-label" style="font-size: 14px;">📊 Institutional Technical Factsheet</h3>
+          <div class="metrics-grid">
+            <div class="metric-card"><span class="m-label">Current Spot Price</span><span class="m-val" id="val-price">$0.00</span></div>
+            <div class="metric-card"><span class="m-label">24h Price Change</span><span class="m-val" id="val-change">0.00%</span></div>
+            <div class="metric-card"><span class="m-label">Calculated RSI (14)</span><span class="m-val" id="val-rsi">50.00</span></div>
+            <div class="metric-card"><span class="m-label">True Volatility (ATR)</span><span class="m-val" id="val-atr">$0.00</span></div>
+          </div>
+          <h3 class="field-label" style="font-size: 14px; margin-top: 15px;">🎯 Pure Mathematical Volatility Targets</h3>
+          <div class="output" id="target-output">Processing quantitative vector layers...</div>
+        </div>
+
+        <div class="error-box" id="error-container" style="display: none;"></div>
+      </div>
+    </div>
+
+    <div id="win-vault" class="win">
+      <div class="win-titlebar tb-purple">
+        <span>🔑 Quantitative Core Guidelines</span>
+        <div class="win-btns">
+          <div class="win-btn" onclick="minimizeWindow('win-vault')">-</div>
+          <div class="win-btn" onclick="closeWindow('win-vault')">×</div>
+        </div>
+      </div>
+      <div class="win-content">
+        <p class="vault-intro">This terminal ties entry/exit math to two real indicators rather than guessing:</p>
+        <div class="vault-list">
+          <div class="vault-card">
+            <div class="vault-card-head"><div class="vault-rank">1</div><strong>Relative Strength Index (RSI)</strong></div>
+            <p class="muted" style="margin-top: 5px; font-size: 11.5px;">RSI under 35 flags oversold conditions. RSI over 65 flags overbought conditions.</p>
+          </div>
+          <div class="vault-card">
+            <div class="vault-card-head"><div class="vault-rank">2</div><strong>Volatility (ATR)</strong></div>
+            <p class="muted" style="margin-top: 5px; font-size: 11.5px;">Stop-loss and target distances scale with the asset's own recent daily range instead of a fixed percentage.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="win-watchlist" class="win open">
+      <div class="win-titlebar tb-teal">
+        <span>★ Live Crypto Watchlist</span>
+        <div class="win-btns">
+          <div class="win-btn" onclick="minimizeWindow('win-watchlist')">-</div>
+          <div class="win-btn" onclick="closeWindow('win-watchlist')">×</div>
+        </div>
+      </div>
+      <div class="win-content">
+        <div class="search-box" style="margin-bottom: 12px;">
+          <input type="text" id="watchlist-add-input" placeholder="Add Ticker (e.g. SOL-USD)">
+          <button class="btn teal small" onclick="handleAddWatchlist()">+ Add</button>
+        </div>
+        <p class="vault-intro" style="margin-bottom: 8px;">Click a card to load it into the terminal above.</p>
+        <div id="watchlist-items-box" class="scroll-area" style="max-height: 250px; overflow-y: auto; padding-right: 4px;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ===== Config =====
+    // Twelve Data is CORS-enabled, so no proxy is needed, and it covers
+    // both stocks and crypto through one endpoint.
+    // Get a free key (no card required) at https://twelvedata.com/pricing
+    // and paste it below.
+    const TWELVE_DATA_API_KEY = "YOUR_API_KEY_HERE";
+    const TWELVE_DATA_BASE = "https://api.twelvedata.com/time_series";
+
+    let cryptoWatchlist = ["BTC-USD", "ETH-USD", "XRP-USD", "SOL-USD"];
+
+    // Twelve Data wants crypto pairs as "BTC/USD", not "BTC-USD".
+    function toTwelveDataSymbol(symbol) {
+      return symbol.includes('-') ? symbol.replace('-', '/') : symbol;
+    }
+
+    async function fetchTimeSeries(symbol, outputsize = 30) {
+      if (!TWELVE_DATA_API_KEY || TWELVE_DATA_API_KEY === "YOUR_API_KEY_HERE") {
+        throw new Error("Add your free Twelve Data API key at the top of the script (TWELVE_DATA_API_KEY). Sign up at twelvedata.com — no card required.");
+      }
+      const tdSymbol = toTwelveDataSymbol(symbol);
+      const url = `${TWELVE_DATA_BASE}?symbol=${encodeURIComponent(tdSymbol)}&interval=1day&outputsize=${outputsize}&order=ASC&apikey=${TWELVE_DATA_API_KEY}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.status === "error" || !data.values) {
+        throw new Error(data.message || `No data returned for "${symbol}". Check the symbol format.`);
+      }
+      return data.values; // chronological (oldest first) array of {datetime, open, high, low, close, volume}
+    }
+
+    // ===== Window management =====
+    function openWindow(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.display = 'flex';
+      document.querySelectorAll('.win').forEach(w => w.style.zIndex = '10');
+      el.style.zIndex = '12';
+    }
+    function closeWindow(id) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    }
+    function minimizeWindow(id) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    }
+
+    function initializeDraggables() {
+      document.querySelectorAll('.win-titlebar').forEach(bar => {
+        bar.addEventListener('mousedown', function (e) {
+          if (e.target.classList.contains('win-btn') || e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+          const win = bar.parentElement;
+          if (!win) return;
+          document.querySelectorAll('.win').forEach(w => w.style.zIndex = '10');
+          win.style.zIndex = '12';
+          const shiftX = e.clientX - win.getBoundingClientRect().left;
+          const shiftY = e.clientY - win.getBoundingClientRect().top;
+          function onMouseMove(event) {
+            win.style.left = (event.clientX - shiftX) + 'px';
+            win.style.top = (event.clientY - shiftY) + 'px';
+          }
+          document.addEventListener('mousemove', onMouseMove);
+          document.onmouseup = function () {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.onmouseup = null;
+          };
+        });
+      });
+    }
+
+    // ===== Core analysis =====
+    async function analyzeAsset(customSymbol = null) {
+      const inputEl = document.getElementById('ticker-input');
+      const logEl = document.getElementById('terminal-log');
+      const badgeEl = document.getElementById('asset-badge');
+      const errorBox = document.getElementById('error-container');
+      const quantBox = document.getElementById('quant-results');
+      if (!inputEl || !logEl || !badgeEl || !errorBox || !quantBox) return;
+
+      let symbol = (customSymbol || inputEl.value).trim().toUpperCase();
+      if (!symbol) return;
+      inputEl.value = symbol;
+
+      errorBox.style.display = 'none';
+      quantBox.style.display = 'none';
+      badgeEl.innerText = "Syncing...";
+      logEl.innerHTML = `<div class="log-line trying"><span class="log-icon">⏳</span> Contacting exchange feed for [${symbol}]...</div>`;
+
+      try {
+        const values = await fetchTimeSeries(symbol, 30);
+
+        if (values.length < 5) {
+          throw new Error("Not enough trading history returned to compute indicators.");
+        }
+
+        const historicalCloses = values.map(v => parseFloat(v.close));
+        const historicalHighs = values.map(v => parseFloat(v.high));
+        const historicalLows = values.map(v => parseFloat(v.low));
+
+        const currentPrice = historicalCloses[historicalCloses.length - 1];
+        const prevClose = historicalCloses[historicalCloses.length - 2];
+        const pctChange = ((currentPrice - prevClose) / prevClose) * 100;
+
+        logEl.innerHTML += `<div class="log-line success"><span class="log-icon">✓</span> Live feed synced. Spot: $${currentPrice.toFixed(2)}</div>`;
+        logEl.innerHTML += `<div class="log-line trying"><span class="log-icon">⏳</span> Computing RSI / ATR...</div>`;
+
+        const rsi = calculateRSI(historicalCloses, 14);
+        const atr = calculateVolatility(historicalHighs, historicalLows, historicalCloses);
+
+        document.getElementById('val-price').innerText = `$${currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        const changeEl = document.getElementById('val-change');
+        changeEl.innerText = `${pctChange >= 0 ? '+' : ''}${pctChange.toFixed(2)}%`;
+        changeEl.style.color = pctChange >= 0 ? 'var(--ok)' : 'var(--pink-hot)';
+        document.getElementById('val-rsi').innerText = rsi.toFixed(2);
+        document.getElementById('val-atr').innerText = `$${atr.toFixed(2)}`;
+
+        generateStrategicTargets(currentPrice, atr, rsi, symbol);
+
+        badgeEl.innerText = symbol;
+        logEl.innerHTML += `<div class="log-line success"><span class="log-icon">✓</span> Analysis complete.</div>`;
+        quantBox.style.display = 'block';
+
+      } catch (err) {
+        badgeEl.innerText = "Error";
+        logEl.innerHTML += `<div class="log-line failed"><span class="log-icon">×</span> ${err.message || 'Request failed.'}</div>`;
+        errorBox.innerText = err.message || "Failed to fetch or parse asset data.";
+        errorBox.style.display = 'block';
+      }
+    }
+
+    function calculateRSI(closes, period = 14) {
+      if (closes.length <= period) return 50.0;
+      let gains = 0, losses = 0;
+      for (let i = closes.length - period; i < closes.length; i++) {
+        const diff = closes[i] - closes[i - 1];
+        if (diff > 0) gains += diff; else losses += Math.abs(diff);
+      }
+      if (losses === 0) return 100;
+      const rs = (gains / period) / (losses / period);
+      return 100 - (100 / (1 + rs));
+    }
+
+    function calculateVolatility(highs, lows, closes) {
+      let totalRange = 0, count = 0;
+      const depth = Math.min(closes.length - 1, 10);
+      for (let i = closes.length - depth; i < closes.length; i++) {
+        const tr = Math.max(
+          highs[i] - lows[i],
+          Math.abs(highs[i] - closes[i - 1]),
+          Math.abs(lows[i] - closes[i - 1])
+        );
+        totalRange += tr;
+        count++;
+      }
+      return count > 0 ? (totalRange / count) : (closes[closes.length - 1] * 0.02);
+    }
+
+    function generateStrategicTargets(spot, atr, rsi, symbol) {
+      const targetOutput = document.getElementById('target-output');
+      if (!targetOutput) return;
+
+      const entryZoneStart = spot - (atr * 0.85);
+      const entryZoneEnd = spot - (atr * 1.5);
+      const stopLoss = spot - (atr * 2.5);
+      const takeProfit1 = spot + (atr * 1.2);
+      const takeProfit2 = spot + (atr * 2.2);
+
+      let assetCondition = "NEUTRAL";
+      let note = "No strong RSI signal; levels below are pure ATR-distance math, not a call to act.";
+      if (rsi < 35) {
+        assetCondition = "OVERSOLD (RSI < 35)";
+        note = `RSI suggests oversold conditions. Reference accumulation zone: $${entryZoneStart.toFixed(2)}–$${entryZoneEnd.toFixed(2)}.`;
+      } else if (rsi > 65) {
+        assetCondition = "OVERBOUGHT (RSI > 65)";
+        note = `RSI suggests overbought conditions. Reference partial-exit zone near $${takeProfit1.toFixed(2)}.`;
+      }
+
+      targetOutput.innerHTML = `
+=== [${symbol}] ATR-BASED REFERENCE LEVELS ===
+STATE: ${assetCondition}
+
+[BUY ENTRY ZONE]
+  $${entryZoneStart.toFixed(2)} - $${entryZoneEnd.toFixed(2)}
+
+[STOP-LOSS]
+  $${stopLoss.toFixed(2)}
+
+[EXIT TARGETS]
+  TP1: $${takeProfit1.toFixed(2)}
+  TP2: $${takeProfit2.toFixed(2)}
+
+NOTE: "${note}"
+This is arithmetic on historical price data, not financial advice.`.trim();
+    }
+
+    // ===== Watchlist =====
+    async function updateWatchlistUI() {
+      const container = document.getElementById('watchlist-items-box');
+      if (!container) return;
+
+      let htmlString = "";
+      for (const symbol of cryptoWatchlist) {
+        try {
+          const values = await fetchTimeSeries(symbol, 2);
+          if (values.length < 2) throw new Error();
+
+          const price = parseFloat(values[values.length - 1].close);
+          const prevClose = parseFloat(values[values.length - 2].close);
+          const pctChange = ((price - prevClose) / prevClose) * 100;
+          const changeSign = pctChange >= 0 ? "+" : "";
+          const changeColor = pctChange >= 0 ? "var(--ok)" : "var(--pink-hot)";
+
+          htmlString += `
+            <div class="vault-card" style="margin-bottom: 8px;" onclick="analyzeAsset('${symbol}')">
+              <div class="vault-card-head">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <div class="vault-rank" style="background: var(--teal);">★</div>
+                  <strong>${symbol}</strong>
+                </div>
+                <span style="font-weight:700; color:${changeColor};">${changeSign}${pctChange.toFixed(2)}%</span>
+              </div>
+              <p class="muted" style="margin-top:4px; font-size:13px; font-family:monospace; font-weight:700;">
+                Spot: $${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </p>
+            </div>`;
+        } catch (e) {
+          htmlString += `
+            <div class="vault-card" style="margin-bottom: 8px; opacity:0.7;" onclick="analyzeAsset('${symbol}')">
+              <div class="vault-card-head"><strong>${symbol}</strong></div>
+              <p style="color: var(--pink-hot); font-size:11px;">Feed sync failed. Click to retry.</p>
+            </div>`;
+        }
+      }
+      container.innerHTML = htmlString;
+    }
+
+    function handleAddWatchlist() {
+      const input = document.getElementById('watchlist-add-input');
+      if (!input) return;
+      let newTicker = input.value.trim().toUpperCase();
+      if (!newTicker) return;
+      const bareCryptos = ['BTC', 'ETH', 'XRP', 'SOL'];
+      if (!newTicker.includes('-') && bareCryptos.includes(newTicker)) {
+        newTicker = `${newTicker}-USD`;
+      }
+      if (!cryptoWatchlist.includes(newTicker)) {
+        cryptoWatchlist.push(newTicker);
+        updateWatchlistUI();
+      }
+      input.value = "";
+    }
+
+    // ===== Init =====
+    document.addEventListener("DOMContentLoaded", () => {
+      initializeDraggables();
+      analyzeAsset('AAPL');
+      updateWatchlistUI();
+      setInterval(updateWatchlistUI, 60000);
+    });
+  </script>
+</body>
+</html>
