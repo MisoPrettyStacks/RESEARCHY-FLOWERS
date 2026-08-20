@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blossom 🌸 Institutional Research Terminal</title>
+  <title>Researchy Flowers 🌸 — New Constructs Forensic Engine</title>
   <style>
-    /* ===== Blossom 🌸 — Y2K kawaii desktop theme ===== */
-    @import url('https://googleapis.com');
+    /* Blossom 🌸 — Y2K kawaii desktop theme */
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
 
     :root {
       --ink: #2b2b3d;
@@ -25,199 +24,196 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; width: 100%; overflow: hidden; }
+    html, body { height: 100%; }
     body {
       font-family: 'DM Sans', 'Trebuchet MS', Arial, sans-serif;
-      color: #2b2b3d;
+      color: var(--ink);
+      overflow: hidden;
       background-color: #ffe0f0;
     }
 
-    /* ===== Desktop Workspace ===== */
+    /* ===== Desktop ===== */
     .desktop {
       width: 100%; height: 100vh;
-      background: radial-gradient(circle, #ffe0f0 20%, transparent 20%),
-                  radial-gradient(circle, #e8f4fd 20%, transparent 20%);
-      background-size: 40px 40px;
-      background-position: 0 0, 20px 20px;
+      background: linear-gradient(135deg, #ffe0f0 0%, #e8f4fd 100%);
       position: relative; overflow: hidden;
     }
 
     .sparkle {
-      position: absolute; pointer-events: none; font-size: 22px;
-      animation: sparkle-anim 3s infinite ease-in-out;
-      filter: drop-shadow(0 0 2px rgba(255,255,255,0.9));
-      user-select: none;
+      position: absolute; pointer-events: none; font-size: 18px;
+      animation: sparkle-anim 2s infinite;
+      filter: drop-shadow(0 0 2px rgba(255,255,255,0.8));
     }
     @keyframes sparkle-anim {
-      0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
-      50% { opacity: 0.3; transform: scale(1.4) rotate(180deg); }
+      0%,100% { opacity: 1; transform: scale(1) rotate(0deg); }
+      50% { opacity: 0.4; transform: scale(1.3) rotate(180deg); }
     }
 
-    /* ===== Desktop Window Placement & Management ===== */
+    /* ===== Desktop icons ===== */
     .icon-grid {
       display: flex; flex-direction: column; gap: 18px;
       padding: 18px; position: absolute; top: 6px; left: 6px; z-index: 5;
     }
     .desktop-icon {
-      display: flex; flex-direction: column; align-items: center; gap: 6px;
-      cursor: pointer; width: 78px;
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      cursor: pointer; width: 85px;
     }
-    .desktop-icon:hover .icon-label { background: #2b2b3d; color: #fff; }
+    .desktop-icon:hover .icon-label { background: var(--ink); color: #fff; }
     .icon-img {
-      font-size: 26px; line-height: 1; display: flex; align-items: center; justify-content: center;
-      width: 48px; height: 48px; background: #fdfaf6; border: 2.5px solid #2b2b3d;
+      font-size: 28px; line-height: 1; display: flex; align-items: center; justify-content: center;
+      width: 46px; height: 46px; background: var(--paper); border: 2.5px solid var(--ink);
       border-radius: 12px; box-shadow: 3px 3px 0 rgba(43,43,61,0.85);
-      transition: transform 0.1s;
     }
-    .desktop-icon:active .icon-img { transform: scale(0.95); }
     .icon-label {
-      font-size: 11px; font-weight: 700; color: #2b2b3d; text-align: center;
+      font-size: 11px; font-weight: 700; color: var(--ink); text-align: center;
       padding: 2px 7px; background: rgba(253,250,246,0.9); border-radius: 7px; white-space: nowrap;
-      border: 1.5px solid #2b2b3d;
     }
 
-    /* ===== Windows Chassis ===== */
+    /* ===== Windows ===== */
     .win {
-      position: absolute; background: #fdfaf6;
-      border: 2.5px solid #2b2b3d; border-radius: 14px;
+      position: absolute; background: var(--paper);
+      border: 2.5px solid var(--ink); border-radius: 14px;
       box-shadow: 6px 6px 0 rgba(43,43,61,0.9);
-      min-width: 280px; font-size: 13px; cursor: default; overflow: hidden; z-index: 10;
+      min-width: 200px; font-size: 13px; cursor: default; overflow: hidden; z-index: 10;
       display: none;
     }
     .win.open { display: flex; flex-direction: column; }
     .win-titlebar {
-      padding: 10px 12px; display: flex; align-items: center; justify-content: space-between;
-      cursor: move; font-size: 13px; font-weight: 700; color: #2b2b3d;
-      letter-spacing: 0.2px; border-bottom: 2.5px solid #2b2b3d; user-select: none;
+      background: linear-gradient(90deg, var(--teal), var(--purple));
+      padding: 8px 10px; display: flex; align-items: center; justify-content: space-between;
+      cursor: grab; font-size: 13px; font-weight: 700; color: var(--ink);
+      letter-spacing: 0.2px; border-bottom: 2.5px solid var(--ink); user-select: none;
     }
+    .win-titlebar:active { cursor: grabbing; }
     .tb-pink   { background: linear-gradient(90deg, #ff9fc7, #ffc4a3) !important; }
     .tb-purple { background: linear-gradient(90deg, #cdb3f0, #f0b3e0) !important; }
     .tb-teal   { background: linear-gradient(90deg, #7fe0e0, #9fc9f5) !important; }
+    .tb-yellow { background: linear-gradient(90deg, #ffe06f, #ffc4a3) !important; }
 
     .win-btns { display: flex; gap: 5px; }
     .win-btn {
-      width: 22px; height: 22px; border: 2px solid #2b2b3d; border-radius: 6px;
-      font-size: 12px; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-weight: bold; color: #2b2b3d; background: #fdfaf6;
-      flex-shrink: 0; line-height: 1; padding-bottom: 2px;
+      width: 20px; height: 20px; border: 2px solid var(--ink); border-radius: 5px;
+      font-size: 11px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-weight: bold; color: var(--ink); background: var(--paper);
+      flex-shrink: 0; line-height: 1;
     }
     .win-btn:hover { background: #fff; transform: translateY(-1px); }
-    .win-btn:active { transform: translateY(1px); }
-    .win-content { padding: 14px; color: #2b2b3d; overflow-y: auto; max-height: 80vh; }
+    .win-content { padding: 14px; color: var(--ink); overflow-y: auto; }
 
-    /* Custom Kawaii Scrollbars */
+    /* Custom kawaii scrollbars */
     .win-content::-webkit-scrollbar, .scroll-area::-webkit-scrollbar { width: 10px; }
-    .win-content::-webkit-scrollbar-track, .scroll-area::-webkit-scrollbar-track { background: #ffe0f0; border-radius: 6px; }
-    .win-content::-webkit-scrollbar-thumb, .scroll-area::-webkit-scrollbar-thumb { background: #ff9fc7; border-radius: 6px; border: 1.5px solid #2b2b3d; }
+    .win-content::-webkit-scrollbar-track, .scroll-area::-webkit-scrollbar-track { background: var(--soft-pink); border-radius: 6px; }
+    .win-content::-webkit-scrollbar-thumb, .scroll-area::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 6px; border: 1px solid var(--ink); }
 
-    /* ===== Input Controls & Search Hub ===== */
-    .search-box { display: flex; gap: 8px; margin-bottom: 4px; }
-    #ticker-input { text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
-    .field-label { display: block; font-weight: 700; font-size: 12px; margin: 10px 0 5px; color: #cc0066; }
-    .muted { color: #6b6b7a; font-weight: 400; }
+    /* ===== Form controls (kawaii) ===== */
+    .field-label { display: block; font-weight: 700; font-size: 12px; margin: 10px 0 5px; color: var(--pink-hot); }
+    .field-label:first-child { margin-top: 0; }
+    .muted { color: #8a8a9a; font-weight: 400; }
 
-    input[type="text"] {
-      flex-grow: 1; border: 2px solid #2b2b3d; border-radius: 8px;
-      padding: 8px 10px; font: inherit; font-size: 13px; background: #fff; color: #2b2b3d;
+    textarea, input[type="text"], input[type="password"], select {
+      width: 100%; border: 2px solid var(--ink); border-radius: 8px;
+      padding: 7px 9px; font: inherit; font-size: 12.5px; background: #fff; color: var(--ink);
     }
-    input:focus { outline: none; border-color: #ff7fb8; box-shadow: 0 0 0 2px #ffe0f0; }
+    textarea { resize: vertical; }
+    textarea:focus, input:focus, select:focus { outline: none; border-color: var(--pink-deep); box-shadow: 0 0 0 2px var(--soft-pink); }
 
     .btn {
-      background: #fdfaf6; border: 2px solid #2b2b3d; border-radius: 8px;
-      box-shadow: 2px 2px 0 rgba(43,43,61,0.85); padding: 7px 14px;
-      font: inherit; font-size: 12px; font-weight: 700; color: #2b2b3d; cursor: pointer;
+      background: var(--paper); border: 2px solid var(--ink); border-radius: 8px;
+      box-shadow: 2px 2px 0 rgba(43,43,61,0.85); padding: 6px 12px;
+      font: inherit; font-size: 12px; font-weight: 700; color: var(--ink); cursor: pointer;
       transition: transform .08s;
     }
     .btn:hover { background: #fff; }
     .btn:active { transform: translate(2px,2px); box-shadow: none; }
-    .btn.primary { background: #ff9fc7; }
-    .btn.primary:hover { background: #ff7fb8; }
-    .btn.teal { background: #7fe0e0; }
+    .btn.primary { background: var(--pink); }
+    .btn.primary:hover { background: var(--pink-deep); }
+    .btn.primary:disabled { opacity: .55; cursor: default; transform: none; box-shadow: 2px 2px 0 rgba(43,43,61,0.4); }
+    .btn.teal { background: var(--teal); }
     .btn.small { padding: 4px 9px; font-size: 11px; }
+    
+    .icon-btn {
+      border: 2px solid var(--ink); background: var(--paper); border-radius: 7px;
+      width: 28px; height: 26px; cursor: pointer; font-size: 11px; color: var(--ink);
+      box-shadow: 1px 1px 0 rgba(43,43,61,0.6);
+    }
+    .icon-btn:hover { background: #fff; }
+    .icon-btn:disabled { opacity: .35; cursor: default; }
 
-    /* ===== Specific Workspace Formatting ===== */
-    #win-blossom { width: 460px; left: 60px; top: 40px; }
-    #win-vault { width: 380px; left: 540px; top: 40px; }
-    #win-watchlist { width: 340px; left: 540px; top: 340px; }
+    /* ===== Blossom Pipeline Custom Layout Adjustments ===== */
+    #win-blossom { width: 460px; left: 140px; top: 30px; }
+    #win-blossom .win-content { max-height: 80vh; }
 
     .providers-hint {
-      font-size: 11.5px; background: #ffe0f0; color: #cc0066;
-      border: 2px solid #ff9fc7; border-radius: 8px; padding: 8px 10px; margin-bottom: 12px;
-      line-height: 1.4;
+      font-size: 12px; background: var(--soft-pink); color: var(--pink-hot);
+      border: 2px solid var(--pink); border-radius: 8px; padding: 7px 10px; margin-bottom: 10px;
     }
-    .run-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+    .providers-hint.warn { background: #fff7d6; border-color: var(--yellow); color: #9a6b00; }
+
+    .run-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
     .hint { font-size: 11px; }
 
-    .result-box { margin-top: 14px; border-top: 2px dashed #ff9fc7; padding-top: 12px; }
+    .result-box { margin-top: 14px; border-top: 2px dashed var(--pink); padding-top: 12px; }
     .result-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-    .result-head h3 { font-size: 13px; font-weight: 700; }
-    .badge { font-size: 11px; background: #cdb3f0; color: #2b2b3d; padding: 2px 8px; border-radius: 999px; border: 1.5px solid #2b2b3d; font-weight: 700; }
+    .result-head h3 { font-size: 13px; }
+    .badge { font-size: 11px; background: var(--purple); color: var(--ink); padding: 3px 9px; border-radius: 999px; border: 1.5px solid var(--ink); }
 
     .run-log {
-      font-family: 'Courier New', monospace; font-size: 11px;
-      background: #1c1c24; color: #00ff88; border: 2px solid #2b2b3d; border-radius: 8px;
-      padding: 10px; max-height: 110px; overflow-y: auto; margin-bottom: 14px;
+      font-family: 'Courier New', monospace; font-size: 11.5px;
+      background: #16161f; color: #00ff88; border: 2px solid var(--ink); border-radius: 8px;
+      padding: 9px; max-height: 150px; overflow: auto; margin-bottom: 10px;
     }
-    .log-line { display: flex; gap: 6px; padding: 2px 0; align-items: center; }
-    .log-icon { width: 12px; font-weight: bold; }
+    .log-line { display: flex; gap: 8px; padding: 1px 0; }
+    .log-icon { width: 14px; text-align: center; }
     .log-line.success { color: #00ff88; }
+    .log-line.failed, .log-line.rate_limited { color: #ff80bf; }
     .log-line.trying { color: #ffe06f; }
-    .log-line.failed { color: #ff66a3; }
-
-    /* Metrics Panels */
-    .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-    .metric-card {
-      background: #fff; border: 2px solid #2b2b3d; border-radius: 10px;
-      padding: 8px 10px; box-shadow: 2px 2px 0 rgba(43,43,61,0.5);
-      display: flex; flex-direction: column;
-    }
-    .m-label { font-size: 10.5px; font-weight: 700; color: #78788a; text-transform: uppercase; }
-    .m-val { font-size: 15px; font-weight: 700; color: #2b2b3d; margin-top: 2px; }
 
     .output {
-      white-space: pre-wrap; word-break: break-word; font-size: 12px; margin: 0;
-      font-family: monospace; background: #e8f4fd; border: 2px solid #9fc9f5;
-      border-radius: 10px; padding: 12px; line-height: 1.5; color: #1e2d4a;
+      white-space: pre-wrap; word-break: break-word; font-size: 13px; margin: 0;
+      font-family: inherit; background: var(--soft-blue); border: 2px solid var(--blue);
+      border-radius: 10px 10px 10px 2px; padding: 10px 12px;
     }
-    .error-box { background: #ffe0f0; color: #cc0066; border: 2px solid #ff9fc7; padding: 9px 11px; border-radius: 8px; font-size: 12px; font-weight: 700; }
-
-    .vault-intro { font-size: 12px; color: #5b5b6a; margin-bottom: 14px; line-height: 1.5; }
+    
+    /* ===== Vault / Models Layout Adjustments ===== */
+    #win-vault { width: 400px; left: 630px; top: 50px; }
+    #win-vault .win-content { max-height: 80vh; }
+    .vault-intro { font-size: 11.5px; color: #6b6b7a; margin-bottom: 12px; line-height: 1.5; }
     .vault-list { display: grid; gap: 12px; }
-    .vault-card { border: 2px solid #2b2b3d; border-radius: 12px; padding: 11px; background: #fff; box-shadow: 2px 2px 0 rgba(43,43,61,0.5); }
-    .vault-card-head { display: flex; align-items: center; gap: 8px; }
+    .vault-card { border: 2px solid var(--ink); border-radius: 12px; padding: 11px; background: #fff; box-shadow: 2px 2px 0 rgba(43,43,61,0.5); }
+    .vault-card-head { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+    .vault-title-group { display: flex; align-items: center; gap: 6px; }
     .vault-rank {
-      width: 22px; height: 22px; border-radius: 7px; background: #ff9fc7; color: #2b2b3d;
-      display: grid; place-items: center; font-size: 11px; font-weight: 700; border: 1.5px solid #2b2b3d;
+      width: 22px; height: 22px; border-radius: 7px; background: var(--pink); color: var(--ink);
+      display: grid; place-items: center; font-size: 11px; font-weight: 700; border: 1.5px solid var(--ink);
     }
+    .vault-ticker { font-weight: 700; font-size: 13px; }
+    .vault-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; font-size: 11.5px; background: var(--paper); padding: 6px; border-radius: 6px; border: 1px solid var(--ink); }
   </style>
 </head>
 <body>
 
-  <div class="desktop">
-    <!-- Background Sparkles -->
-    <div class="sparkle" style="top: 15%; left: 45%;">✨</div>
-    <div class="sparkle" style="top: 60%; left: 80%;">🌸</div>
-    <div class="sparkle" style="top: 75%; left: 15%;">✨</div>
+<div class="desktop">
+  
+  <!-- Sparkles -->
+  <div class="sparkle" style="top:20%; left:40%;">✨</div>
+  <div class="sparkle" style="top:70%; left:15%;">🌸</div>
+  <div class="sparkle" style="top:15%; left:85%;">✨</div>
+  <div class="sparkle" style="top:80%; left:75%;">🌸</div>
 
-    <!-- Desktop Icons Grid -->
-    <div class="icon-grid">
-      <div class="desktop-icon" onclick="openWindow('win-blossom')">
-        <div class="icon-img">📈</div>
-        <div class="icon-label">Terminal</div>
-      </div>
-      <div class="desktop-icon" onclick="openWindow('win-vault')">
-        <div class="icon-img">🔑</div>
-        <div class="icon-label">Metrics Vault</div>
-      </div>
-      <div class="desktop-icon" onclick="openWindow('win-watchlist')">
-        <div class="icon-img">⭐</div>
-        <div class="icon-label">Watchlist</div>
-      </div>
+  <!-- Icon Grid -->
+  <div class="icon-grid">
+    <div class="desktop-icon" onclick="openWindow('win-blossom')">
+      <div class="icon-img">🔍</div>
+      <div class="icon-label">Forensic Engine</div>
     </div>
-
-    <!-- MAIN TERMINAL WINDOW -->
-    <div id="win-blossom" class="win open">
-      <div class="win-titlebar tb-pink">
-        <span>🌸 Blossom Quantitative Command</span>
-        <div class="win-btns">
-          <div class="win-btn" onclick="minimizeWindow('win-blossom')">-</div>
+    <div class="desktop-icon" onclick="openWindow('win-vault')">
+      <div class="icon-img">📊</div>
+      <div class="icon-label">Asset Models</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('win-finsights')">
+      <div class="icon-img">💬</div>
+      <div class="icon-label">FinSights AI</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('win-delivery')">
+      <div class="icon-img">📈</div>
+      <div class="icon-label">Product Delivery</div>
