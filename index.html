@@ -25,6 +25,26 @@
         <div class="icon-label">Metrics Vault</div>
       </div>
     </div>
+     <!-- REAL-TIME CRYPTO WATCHLIST SIDEBAR WINDOW -->
+    <div id="win-watchlist" class="win open" style="width: 320px; left: 600px; top: 380px;">
+      <div class="win-titlebar tb-teal">
+        <span>★ Live Crypto Watchlist</span>
+        <div class="win-btns">
+          <div class="win-btn" onclick="minimizeWindow('win-watchlist')">-</div>
+          <div class="win-btn" onclick="closeWindow('win-watchlist')">×</div>
+        </div>
+      </div>
+      <div class="win-content">
+        <div class="search-box" style="margin-bottom: 12px;">
+          <input type="text" id="watchlist-add-input" placeholder="Add Ticker (e.g. SOL-USD)">
+          <button class="btn teal small" onclick="handleAddWatchlist()">+ Add</button>
+        </div>
+        <p class="vault-intro" style="margin-bottom: 8px;">Click any tracked asset card below to instantly pass its vector timeline into the main quantitative terminal:</p>
+        <div id="watchlist-items-box" class="scroll-area" style="max-height: 250px; overflow-y: auto; padding-right: 4px;">
+          <!-- Dynamically populated by app.js -->
+        </div>
+      </div>
+    </div>
 
     <!-- MAIN TERMINAL WINDOW -->
     <div id="win-blossom" class="win open">
