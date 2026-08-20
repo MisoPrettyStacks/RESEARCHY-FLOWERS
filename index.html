@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,17 +42,17 @@
       </div>
       <div class="win-content">
         <div class="providers-hint">
-          <strong>Institutional Mode Active:</strong> Data is fetched directly from real-time global exchange feeds. No simulated forecasting.
+          <strong>Institutional Mode Active:</strong> Data tracks directly from global exchange feeds via CORS gateways. No simulated metrics.
         </div>
         
         <label class="field-label">Lookup Ticker Asset</label>
         <div class="search-box">
-          <input type="text" id="ticker-input" placeholder="e.g., AAPL, BTC-USD, NVDA, ETH-USD" value="AAPL">
+          <input type="text" id="ticker-input" placeholder="e.g., AAPL, BTC-USD, NVDA" value="AAPL">
           <button class="btn primary" id="btn-fetch" onclick="analyzeAsset()">Analyze</button>
         </div>
 
         <div class="run-row">
-          <span class="hint muted">Supported: Any valid Yahoo Finance equity or crypto ticker tracking pair.</span>
+          <span class="hint muted">Tip: Use ticker extensions for pairs (e.g., XRP-USD, BTC-USD).</span>
         </div>
 
         <!-- Terminal Status Logs -->
@@ -115,7 +116,7 @@
               <div class="vault-rank">1</div>
               <strong>Relative Strength Index (RSI) Facts</strong>
             </div>
-            <p class="muted" style="margin-top: 5px; font-size: 11.5px;">Assets with an RSI under 30 indicate statistically significant oversold states. Assets scaling north of 70 highlight strong asset overextension.</p>
+            <p class="muted" style="margin-top: 5px; font-size: 11.5px;">Assets with an RSI under 35 indicate statistically significant oversold states. Assets scaling north of 65 highlight strong asset overextension.</p>
           </div>
           <div class="vault-card">
             <div class="vault-card-head">
